@@ -1,6 +1,8 @@
 import socket
 import threading
 import constants
+import socket_events
+import send_with_header
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(constants.ADDRESS)
@@ -15,6 +17,8 @@ def handle_client(connection, address):
             message_length = int(message_length_raw)
             message = connection.recv(message_length).decode(constants.FORMAT)
             print(f"[{address}] {message}")
+            
+            send_with_header.send_message_with_header(socket_events.client_to_server_events['message_received'], connection)
         
             if message == constants.DISCONNECT_MESSAGE:
                 connected = False
