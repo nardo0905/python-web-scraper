@@ -1,5 +1,3 @@
-import constants
-
-client_to_server_events = {
+server_to_client_events = {
     "message_received": "message received"
 }

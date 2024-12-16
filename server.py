@@ -3,6 +3,9 @@ import threading
 import constants
 import socket_events
 import send_with_header
+import web_scraper
+import sys
+import json
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind(constants.ADDRESS)
@@ -10,19 +13,17 @@ server.bind(constants.ADDRESS)
 def handle_client(connection, address):
     print(f"{address} connected")
     
-    connected = True
-    while connected:
-        message_length_raw = connection.recv(constants.HEADER).decode(constants.FORMAT)
-        if message_length_raw:
-            message_length = int(message_length_raw)
-            message = connection.recv(message_length).decode(constants.FORMAT)
-            print(f"[{address}] {message}")
+    sys.setrecursionlimit(10**8)
+    
+    message = connection.recv(1024).decode(constants.FORMAT)
             
-            send_with_header.send_message_with_header(socket_events.client_to_server_events['message_received'], connection)
-        
-            if message == constants.DISCONNECT_MESSAGE:
-                connected = False
-                print(f"[{address}] disconnected")
+    items = web_scraper.scrape(message)
+    
+    serialized_items = json.dumps(items)
+    
+    print(serialized_items)
+    
+    connection.send(serialized_items.encode(constants.FORMAT))
             
     connection.close()
 
