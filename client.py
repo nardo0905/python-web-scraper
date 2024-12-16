@@ -1,6 +1,5 @@
 import socket
 import constants
-import send_with_header
 import json
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

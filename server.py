@@ -1,10 +1,7 @@
 import socket
 import threading
 import constants
-import socket_events
-import send_with_header
 import web_scraper
-import sys
 import json
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -12,8 +9,6 @@ server.bind(constants.ADDRESS)
 
 def handle_client(connection, address):
     print(f"{address} connected")
-    
-    sys.setrecursionlimit(10**8)
     
     message = connection.recv(1024).decode(constants.FORMAT)
             
